@@ -80,4 +80,24 @@ fun main() {
         onError = {println(it)}
       )
     }
+
+    exampleOf("defer") {
+      val disposables = CompositeDisposable()
+      var flip = false
+      val factory: Observable<Int> = Observable.defer {
+        flip = !flip
+        if (flip) {
+          Observable.just(1,2,3)
+        } else {
+          Observable.just(4,5,6)
+        }
+      }
+      for(i in 0..3) {
+        disposables.add(
+          factory.subscribe {
+            println(it)
+          }
+        )
+      }
+    }
 }
